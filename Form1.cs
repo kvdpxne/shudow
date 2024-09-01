@@ -41,6 +41,22 @@ namespace Shudow {
       _windowsInstallationDateSpoofer = new WindowsInstallationDate();
     }
 
+    private static void Store(
+      Dictionary<string, object> data,
+      ISpoofer spoofer
+    ) {
+      data[spoofer.Name] = spoofer.Value;
+    }
+
+    private static void Restore(
+      Dictionary<string, object> data,
+      ISpoofer spoofer
+    ) {
+      if (data.TryGetValue(spoofer.Name, out var value)) {
+        spoofer.Value = value;
+      }
+    }
+
     private void HandleChangeButtonClick(object sender, EventArgs e) {
       var randomComputerName = Randoms.GenerateRandomAlphanumericText(5);
 
@@ -167,21 +183,19 @@ namespace Shudow {
     }
 
     private void HandleBackupButtonClick(object sender, EventArgs e) {
-      var data = new Dictionary<string, object> {
-        { _computerNameSpoofer.Name, _computerNameSpoofer.Value },
-        { _computerActiveNameSpoofer.Name, _computerActiveNameSpoofer.Value },
-        { _computerHostnameSpoofer.Name, _computerHostnameSpoofer.Value }, {
-          _computerHardwareConfigurationIdentifierSpoofer.Name,
-          _computerHardwareConfigurationIdentifierSpoofer.Value
-        },
-        { _computerHardwareIdentifiersSpoofer.Name, _computerHardwareIdentifiersSpoofer.Value },
-        { _systemManufacturerSpoofer.Name, _systemManufacturerSpoofer.Value },
-        { _systemProductNameSpoofer.Name, _systemProductNameSpoofer.Value },
-        { _systemBiosReleaseDateSpoofer.Name, _systemBiosReleaseDateSpoofer.Value },
-        { _systemBiosVersionSpoofer.Name, _systemBiosVersionSpoofer.Value },
-        { _windowsUpdateDeviceIdentifierSpoofer.Name, _windowsUpdateDeviceIdentifierSpoofer.Value },
-        { _windowsInstallationDateSpoofer.Name, _windowsInstallationDateSpoofer.Value }
-      };
+      var data = new Dictionary<string, object>();
+
+      Store(data, _computerNameSpoofer);
+      Store(data, _computerActiveNameSpoofer);
+      Store(data, _computerHostnameSpoofer);
+      Store(data, _computerHardwareConfigurationIdentifierSpoofer);
+      Store(data, _computerHardwareIdentifiersSpoofer);
+      Store(data, _systemManufacturerSpoofer);
+      Store(data, _systemProductNameSpoofer);
+      Store(data, _systemBiosReleaseDateSpoofer);
+      Store(data, _systemBiosVersionSpoofer);
+      Store(data, _windowsUpdateDeviceIdentifierSpoofer);
+      Store(data, _windowsInstallationDateSpoofer);
 
       var json = JsonSerializer.Serialize(data);
       File.WriteAllText("save.json", json);
@@ -191,50 +205,17 @@ namespace Shudow {
       var text = File.ReadAllText("save.json");
       var data = JsonSerializer.Deserialize<Dictionary<string, object>>(text);
 
-      if (data.TryGetValue("ComputerName", out var computerName)) {
-        _computerNameSpoofer.Value = computerName;
-      }
-
-      if (data.TryGetValue("ComputerActiveName", out var computerActiveName)) {
-        _computerActiveNameSpoofer.Value = computerActiveName;
-      }
-
-      if (data.TryGetValue("ComputerHostname", out var computerHostname)) {
-        _computerHostnameSpoofer.Value = computerHostname;
-      }
-
-      if (data.TryGetValue("ComputerHardwareConfigurationIdentifier",
-            out var computerHardwareConfigurationIdentifier)) {
-        _computerHardwareConfigurationIdentifierSpoofer.Value = computerHardwareConfigurationIdentifier;
-      }
-
-      if (data.TryGetValue("ComputerHardwareIdentifiers", out var computerHardwareIdentifiers)) {
-        _computerHardwareConfigurationIdentifierSpoofer.Value = computerHardwareIdentifiers;
-      }
-
-      if (data.TryGetValue("SystemManufacturer", out var systemManufacturer)) {
-        _systemManufacturerSpoofer.Value = systemManufacturer;
-      }
-
-      if (data.TryGetValue("SystemProductName", out var systemProductName)) {
-        _systemProductNameSpoofer.Value = systemProductName;
-      }
-
-      if (data.TryGetValue("SystemBIOSReleaseDate", out var systemBiosReleaseDate)) {
-        _systemBiosReleaseDateSpoofer.Value = systemBiosReleaseDate;
-      }
-
-      if (data.TryGetValue("SystemBIOSVersion", out var systemBiosVersion)) {
-        _systemBiosVersionSpoofer.Value = systemBiosVersion;
-      }
-
-      if (data.TryGetValue("WindowsUpdateDeviceIdentifier", out var windowsUpdateDeviceIdentifier)) {
-        _windowsUpdateDeviceIdentifierSpoofer.Value = windowsUpdateDeviceIdentifier;
-      }
-
-      if (data.TryGetValue("WindowsInstallationDate", out var windowsInstallationDate)) {
-        _windowsInstallationDateSpoofer.Value = windowsInstallationDate;
-      }
+      Restore(data, _computerNameSpoofer);
+      Restore(data, _computerActiveNameSpoofer);
+      Restore(data, _computerHostnameSpoofer);
+      Restore(data, _computerHardwareConfigurationIdentifierSpoofer);
+      Restore(data, _computerHardwareIdentifiersSpoofer);
+      Restore(data, _systemManufacturerSpoofer);
+      Restore(data, _systemProductNameSpoofer);
+      Restore(data, _systemBiosReleaseDateSpoofer);
+      Restore(data, _systemBiosVersionSpoofer);
+      Restore(data, _windowsUpdateDeviceIdentifierSpoofer);
+      Restore(data, _windowsInstallationDateSpoofer);
     }
   }
 
