@@ -14,7 +14,7 @@ namespace Shudow.Spoofers {
       }
       set {
         using (var key = Registries.GetComputerHardwareConfigurationIdentifier(true)) {
-          key.SetValue("HwProfileGuid", $"{{{value}}}");
+          key.SetValue("HwProfileGuid", value);
         }
       }
     }

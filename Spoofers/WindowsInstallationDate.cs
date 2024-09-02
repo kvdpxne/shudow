@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Win32;
 using Shudow.Shared;
 
 namespace Shudow.Spoofers {
@@ -24,14 +25,14 @@ namespace Shudow.Spoofers {
         }
 
         if (keyValue.TryGetValue("InstallDate", out var installDate)) {
-          using (var key = Registries.GetSoftwareWindowsCurrentVersion()) {
-            key.SetValue("InstallDate", installDate);
+          using (var key = Registries.GetSoftwareWindowsCurrentVersion(true)) {
+            key.SetValue("InstallDate", installDate, RegistryValueKind.DWord);
           }
         }
 
         if (keyValue.TryGetValue("InstallTime", out var installTime)) {
-          using (var key = Registries.GetSoftwareWindowsCurrentVersion()) {
-            key.SetValue("InstallTime", installTime);
+          using (var key = Registries.GetSoftwareWindowsCurrentVersion(true)) {
+            key.SetValue("InstallTime", installTime, RegistryValueKind.QWord);
           }
         }
       }

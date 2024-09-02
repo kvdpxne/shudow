@@ -78,25 +78,21 @@ namespace Shudow {
       }
 
       if (changeComputerHardwareConfigurationIdentifier.Checked) {
-        _computerHardwareConfigurationIdentifierSpoofer.Value = Guid.NewGuid();
+        _computerHardwareConfigurationIdentifierSpoofer.Value = $"{{{Guid.NewGuid()}}}";
       }
 
       if (changeComputerHardwareIdentifiers.Checked) {
         _computerHardwareIdentifiersSpoofer.Value = new Dictionary<string, object> {
-          { "ComputerHardwareId", Guid.NewGuid() },
-          { "ComputerHardwareIds", Enumerable.Repeat(Guid.NewGuid(), 10).ToString() }
+          { "ComputerHardwareId", $"{{{Guid.NewGuid()}}}" },
+          { "ComputerHardwareIds", string.Join("", Enumerable.Range(0, 10).Select(_ => $"{{{Guid.NewGuid()}}}\n")) }
         };
       }
 
       if (changeSystemManufacturer.Checked) {
-        var first = Randoms.GenerateRandomNumber(3, 11);
-        var second = Randoms.GenerateRandomNumber(2, first);
-        var third = Randoms.GenerateRandomNumber(5, 10);
-
         var name = "";
-        name += Randoms.GenerateRandomAlphanumericText(first, third);
-        name += $" {Randoms.GenerateRandomAlphanumericText(second, 10)}";
-        name += $" {Randoms.GenerateRandomAlphanumericText(3, third)}";
+        name += Randoms.GenerateRandomAlphanumericText(3, 11);
+        name += $" {Randoms.GenerateRandomAlphanumericText(2, 6)}";
+        name += $" {Randoms.GenerateRandomAlphanumericText(9, 13)}";
 
         _systemManufacturerSpoofer.Value = name;
       }
@@ -115,7 +111,7 @@ namespace Shudow {
 
       if (changeSystemBiosReleaseDate.Checked) {
         var now = DateTime.Now;
-        var lastYear = new DateTime(now.Year - 1);
+        var lastYear = new DateTime(now.Year - 1, 1, 1);
 
         var date = Randoms.GenerateRandomDateTime(
           new DateTime(1999, 1, 1),
@@ -127,14 +123,14 @@ namespace Shudow {
       }
 
       if (changeSystemBiosVersion.Checked) {
-        _systemBiosVersionSpoofer.Value = Randoms.GenerateRandomNumber(10, 10000);
+        _systemBiosVersionSpoofer.Value = $"{Randoms.GenerateRandomNumber(10, 10000)}";
       }
 
       if (changeWindowsUpdateDeviceIdentifier.Checked) {
         _windowsUpdateDeviceIdentifierSpoofer.Value = new Dictionary<string, object> {
           { "SusClientId", Guid.NewGuid() }, {
             "SusClientIdValidation", Encoding.UTF8.GetBytes(
-              Randoms.GenerateRandomAlphanumericText(25, 25)
+              $"{Randoms.GenerateRandomAlphanumericText(200, 300)}=="
             )
           }
         };
@@ -142,20 +138,23 @@ namespace Shudow {
 
       if (changeWindowsInstallationDate.Checked) {
         var now = DateTime.Now;
-        var lastYear = new DateTime(now.Year - 1);
+        var lastYear = new DateTime(now.Year - 1, 1, 1);
+
+        var begin = new DateTime(1999, 1, 1) - DateTime.MinValue;
+        var end = lastYear - DateTime.MinValue;
 
         _windowsInstallationDateSpoofer.Value = new Dictionary<string, object> {
           {
             "InstallDate",
-            Randoms.GenerateRandomUnsignedInt(
-              915145200,
-              (uint)lastYear.Second
+            (int)Randoms.GenerateRandomUnsignedInt(
+              (uint)begin.TotalSeconds,
+              (uint)end.TotalSeconds
             )
           }, {
             "InstallTime",
-            Randoms.GenerateRandomUnsignedLong(
-              915145200000,
-              (ulong)lastYear.Millisecond
+            (long)Randoms.GenerateRandomUnsignedLong(
+              (ulong)begin.TotalMilliseconds,
+              (ulong)end.TotalMilliseconds
             )
           }
         };
