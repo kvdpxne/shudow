@@ -7,18 +7,18 @@ namespace Shudow.Shared {
   internal static class Registries {
 
     // System
-    private const string ComputerNameKey = "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ComputerName";
-    private const string ActiveComputerNameKey = "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ActiveComputerName";
-    private const string TcpIpParametersKey = "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters";
-    private const string HardwareConfigurationIdentifierKey = "SYSTEM\\CurrentControlSet\\Control\\IDConfigDB\\Hardware Profiles\\0001";
-    private const string SystemInformationKey = "SYSTEM\\CurrentControlSet\\Control\\SystemInformation";
+    private const string ComputerNameKey = @"SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName";
+    private const string ActiveComputerNameKey = @"SYSTEM\CurrentControlSet\Control\ComputerName\ActiveComputerName";
+    private const string TcpIpParametersKey = @"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters";
+    private const string HardwareConfigurationIdentifierKey = @"SYSTEM\CurrentControlSet\Control\IDConfigDB\Hardware Profiles\0001";
+    private const string SystemInformationKey = @"SYSTEM\CurrentControlSet\Control\SystemInformation";
 
     // Software
-    private const string WindowsUpdateKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsUpdate";
-    private const string WindowsCurrentVersionKey = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
+    private const string WindowsUpdateKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate";
+    private const string WindowsCurrentVersionKey = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
 
     // Hardware
-    private const string CentralProcessorKey = "HARDWARE\\DESCRIPTION\\System\\CentralProcessor";
+    private const string CentralProcessorKey = @"HARDWARE\DESCRIPTION\System\CentralProcessor";
 
     public const string ComputerName = "ComputerName";
     public const string ComputerHardwareIdentifier = "ComputerHardwareId";
