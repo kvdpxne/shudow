@@ -10,15 +10,14 @@ namespace Shudow.Spoofers {
     public object Value {
       get {
         using (var key = Registries.GetComputerActiveName()) {
-          return key.GetValue("ComputerName");
+          return key.GetValue(Registries.ComputerName);
         }
       }
       set {
         using (var key = Registries.GetComputerActiveName(true)) {
-          key.SetValue("ComputerName", value, RegistryValueKind.String);
+          key.SetValue(Registries.ComputerName, value, RegistryValueKind.String);
         }
       }
     }
   }
-
 }

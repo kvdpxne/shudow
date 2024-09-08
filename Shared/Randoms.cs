@@ -3,33 +3,25 @@ using System.Text;
 
 namespace Shudow.Shared {
 
+  /// <summary>
+  /// Provides methods for generating random values, including integers, bytes, and strings.
+  /// This class includes functionality for creating random numbers within a specified range,
+  /// generating random byte arrays, and producing random alphanumeric strings.
+  /// </summary>
   internal static class Randoms {
 
-    private const string ALPHANUMERIC_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    /// <summary>
+    /// A constant string containing all alphanumeric characters,
+    /// including uppercase letters (A-Z), lowercase letters (a-z), and digits (0-9).
+    /// </summary>
+    private const string AlphanumericCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    private const string MAC_CHARACTERS = "";
+    private const string MacCharacters = "";
 
     /// <summary>
     /// A static instance of the Random class used for generating random values.
     /// </summary>
-    private static readonly Random Instance;
-
-    /// <summary>
-    ///
-    /// </summary>
-    static Randoms() {
-      Instance = new Random();
-    }
-
-    /// <summary>
-    ///
-    /// </summary>
-    public static int GenerateRandomNumber(
-      int min,
-      int max
-    ) {
-      return Instance.Next(min, 1 + max);
-    }
+    private static readonly Random Instance = new Random();
 
     /// <summary>
     /// Generates a random byte array of the specified size.
@@ -46,11 +38,11 @@ namespace Shudow.Shared {
     }
 
     /// <summary>
-    /// Generates a random unsigned 32-bit integer within a specified range.
+    /// Generates a random 32-bit integer within a specified range.
     /// </summary>
     /// <param name="min">The inclusive lower bound of the random number returned.</param>
     /// <param name="max">The inclusive upper bound of the random number returned.</param>
-    /// <returns>A random unsigned 32-bit integer between <paramref name="min"/> and <paramref name="max"/> (inclusive).</returns>
+    /// <returns>A random 32-bit integer between <paramref name="min"/> and <paramref name="max"/> (inclusive).</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
     public static int GenerateRandomInt(
       int min,
@@ -64,15 +56,15 @@ namespace Shudow.Shared {
       var randomValue = BitConverter.ToInt32(buffer, 0);
 
       // Map the random value to the specified range
-      return max - min + 1 + randomValue;
+      return min + Math.Abs(randomValue) % (max - min + 1);
     }
 
     /// <summary>
-    /// Generates a random unsigned 64-bit integer within a specified range.
+    /// Generates a random 64-bit integer within a specified range.
     /// </summary>
     /// <param name="min">The inclusive lower bound of the random number returned.</param>
     /// <param name="max">The inclusive upper bound of the random number returned.</param>
-    /// <returns>A random unsigned 64-bit integer between <paramref name="min"/> and <paramref name="max"/> (inclusive).</returns>
+    /// <returns>A random 64-bit integer between <paramref name="min"/> and <paramref name="max"/> (inclusive).</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
     public static long GenerateRandomLong(
       long min,
@@ -86,18 +78,45 @@ namespace Shudow.Shared {
       var randomValue = BitConverter.ToInt64(buffer, 0);
 
       // Map the random value to the specified range
-      return min + randomValue % (max - min + 1);
+      return min + Math.Abs(randomValue) % (max - min + 1);
     }
 
-    public static string GenerateRandomAlphanumericText(
-      int minLength,
-      int maxLength = 15
+    /// <summary>
+    /// Generates a random alphanumeric string of a specified length.
+    /// </summary>
+    /// <param name="min">The minimum length of the generated string.</param>
+    /// <param name="max">The maximum length of the generated string (default is 15).</param>
+    /// <param name="digits">
+    /// A boolean flag indicating whether digits (0-9) should be included in the string.
+    /// If set to <c>true</c>, the generated string will include digits; otherwise, only alphabetic characters will be used.
+    /// </param>
+    /// <returns>
+    /// A random alphanumeric string with a length between <paramref name="min"/> and <paramref name="max"/> (inclusive).
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="min"/> is greater than <paramref name="max"/>.
+    /// </exception>
+    public static string GenerateRandomString(
+      int min,
+      int max = 15,
+      bool digits = true
     ) {
-      var length = Instance.Next(minLength, 1 + maxLength);
+      if (min > max) {
+        throw new ArgumentException("Min value should be less than or equal to max value.");
+      }
+
+      var length = Instance.Next(min, max + 1);
       var builder = new StringBuilder(length);
 
+      var lastIndex = digits
+        ? AlphanumericCharacters.Length
+        : AlphanumericCharacters.Length - 10;
+
       for (var i = 0; length > i; ++i) {
-        builder.Append(ALPHANUMERIC_CHARACTERS[Instance.Next(ALPHANUMERIC_CHARACTERS.Length)]);
+        var index = Instance.Next(0, lastIndex);
+        var character = AlphanumericCharacters[index];
+
+        builder.Append(character);
       }
 
       return builder.ToString();

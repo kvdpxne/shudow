@@ -10,15 +10,14 @@ namespace Shudow.Spoofers {
     public object Value {
       get {
         using (var key = Registries.GetComputerHardwareConfigurationIdentifier()) {
-          return key.GetValue("HwProfileGuid");
+          return key.GetValue(Registries.HardwareProfileIdentifier);
         }
       }
       set {
         using (var key = Registries.GetComputerHardwareConfigurationIdentifier(true)) {
-          key.SetValue("HwProfileGuid", value, RegistryValueKind.String);
+          key.SetValue(Registries.HardwareProfileIdentifier, value, RegistryValueKind.String);
         }
       }
     }
   }
-
 }

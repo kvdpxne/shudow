@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Win32;
 using Shudow.Shared;
 
@@ -13,11 +14,11 @@ namespace Shudow.Spoofers {
         var value = new Dictionary<string, object>(2);
 
         using (var key = Registries.GetSystemInformation()) {
-          value["ComputerHardwareId"] = key.GetValue("ComputerHardwareId");
+          value[Registries.ComputerHardwareIdentifier] = key.GetValue(Registries.ComputerHardwareIdentifier);
         }
 
         using (var key = Registries.GetSystemInformation()) {
-          value["ComputerHardwareIds"] = key.GetValue("ComputerHardwareIds");
+          value[Registries.ComputerHardwareIdentifiers] = key.GetValue(Registries.ComputerHardwareIdentifiers);
         }
 
         return value;
@@ -27,19 +28,18 @@ namespace Shudow.Spoofers {
           return;
         }
 
-        if (keyValue.TryGetValue("ComputerHardwareId", out var computerHardwareId)) {
+        if (keyValue.TryGetValue(Registries.ComputerHardwareIdentifier, out var computerHardwareId)) {
           using (var key = Registries.GetSystemInformation(true)) {
-            key.SetValue("ComputerHardwareId", computerHardwareId, RegistryValueKind.String);
+            key.SetValue(Registries.ComputerHardwareIdentifier, computerHardwareId, RegistryValueKind.String);
           }
         }
 
-        if (keyValue.TryGetValue("ComputerHardwareIds", out var computerHardwareIds)) {
+        if (keyValue.TryGetValue(Registries.ComputerHardwareIdentifiers, out var computerHardwareIds)) {
           using (var key = Registries.GetSystemInformation(true)) {
-            key.SetValue("ComputerHardwareIds", computerHardwareIds, RegistryValueKind.MultiString);
+            key.SetValue(Registries.ComputerHardwareIdentifiers, computerHardwareIds, RegistryValueKind.MultiString);
           }
         }
       }
     }
   }
-
 }

@@ -10,15 +10,14 @@ namespace Shudow.Spoofers {
     public object Value {
       get {
         using (var key = Registries.GetSystemInformation()) {
-          return key.GetValue("SystemManufacturer");
+          return key.GetValue(Registries.SystemManufacturer);
         }
       }
       set {
         using (var key = Registries.GetSystemInformation(true)) {
-          key.SetValue("SystemManufacturer", value, RegistryValueKind.String);
+          key.SetValue(Registries.SystemManufacturer, value, RegistryValueKind.String);
         }
       }
     }
   }
-
 }

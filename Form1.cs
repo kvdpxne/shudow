@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Text.Json;
 using Shudow.Shared;
@@ -11,7 +9,7 @@ using Shudow.Spoofers;
 
 namespace Shudow {
 
-  public partial class Form1 : Form {
+  internal partial class Form1 : Form {
 
     private readonly ISpoofer _computerNameSpoofer;
     private readonly ISpoofer _computerActiveNameSpoofer;
@@ -22,6 +20,7 @@ namespace Shudow {
     private readonly ISpoofer _systemProductNameSpoofer;
     private readonly ISpoofer _systemBiosReleaseDateSpoofer;
     private readonly ISpoofer _systemBiosVersionSpoofer;
+    private readonly ISpoofer _hardwareCpuNameSpoofer;
     private readonly ISpoofer _windowsUpdateDeviceIdentifierSpoofer;
     private readonly ISpoofer _windowsInstallationDateSpoofer;
 
@@ -37,6 +36,7 @@ namespace Shudow {
       _systemProductNameSpoofer = new SystemProductName();
       _systemBiosReleaseDateSpoofer = new SystemBiosReleaseDate();
       _systemBiosVersionSpoofer = new SystemBiosVersion();
+      _hardwareCpuNameSpoofer = new HardwareCpuName();
       _windowsUpdateDeviceIdentifierSpoofer = new WindowsUpdateDeviceIdentifier();
       _windowsInstallationDateSpoofer = new WindowsInstallationDate();
     }
@@ -53,12 +53,12 @@ namespace Shudow {
       ISpoofer spoofer
     ) {
       if (data.TryGetValue(spoofer.Name, out var value)) {
-        spoofer.Value = value;
+        spoofer.Value = Jsons.Parse(value);
       }
     }
 
     private void HandleChangeButtonClick(object sender, EventArgs e) {
-      var randomComputerName = Randoms.GenerateRandomAlphanumericText(5);
+      var randomComputerName = Randoms.GenerateRandomString(5);
 
       if (changeComputerName.Checked) {
         _computerNameSpoofer.Value = randomComputerName;
@@ -75,8 +75,8 @@ namespace Shudow {
 
       if (changeComputerHostname.Checked) {
         _computerHostnameSpoofer.Value = new Dictionary<string, object> {
-          { "Hostname", randomComputerName },
-          { "NV Hostname", randomComputerName }
+          { Registries.ComputerHostname, randomComputerName },
+          { Registries.ComputerNvHostname, randomComputerName }
         };
       }
 
@@ -85,8 +85,7 @@ namespace Shudow {
       }
 
       if (changeComputerHardwareIdentifiers.Checked) {
-
-        var count = Randoms.GenerateRandomNumber(3, 11);
+        var count = Randoms.GenerateRandomInt(3, 11);
         var identifiers = new string[count];
 
         for (var i = 0; count > i; ++i) {
@@ -94,23 +93,23 @@ namespace Shudow {
         }
 
         _computerHardwareIdentifiersSpoofer.Value = new Dictionary<string, object> {
-          { "ComputerHardwareId", $"{{{Guid.NewGuid()}}}" },
-          { "ComputerHardwareIds", identifiers }
+          { Registries.ComputerHardwareIdentifier, $"{{{Guid.NewGuid()}}}" },
+          { Registries.ComputerHardwareIdentifiers, identifiers }
         };
       }
 
       if (changeSystemManufacturer.Checked) {
         var name = "";
-        name += Randoms.GenerateRandomAlphanumericText(3, 11);
-        name += $" {Randoms.GenerateRandomAlphanumericText(2, 6)}";
-        name += $" {Randoms.GenerateRandomAlphanumericText(9, 13)}";
+        name += Randoms.GenerateRandomString(3, 11);
+        name += $" {Randoms.GenerateRandomString(2, 6)}";
+        name += $" {Randoms.GenerateRandomString(9, 13)}";
 
         _systemManufacturerSpoofer.Value = name;
       }
 
       if (changeSystemProductName.Checked) {
-        var model = Randoms.GenerateRandomAlphanumericText(3, 6);
-        var type = Randoms.GenerateRandomAlphanumericText(2, 7);
+        var model = Randoms.GenerateRandomString(3, 6);
+        var type = Randoms.GenerateRandomString(2, 7);
 
         _systemProductNameSpoofer.Value = $"{model}-{type}";
       }
@@ -134,16 +133,25 @@ namespace Shudow {
       }
 
       if (changeSystemBiosVersion.Checked) {
-        _systemBiosVersionSpoofer.Value = $"{Randoms.GenerateRandomNumber(10, 10000)}";
+        _systemBiosVersionSpoofer.Value = $"{Randoms.GenerateRandomInt(10, 10000)}.E";
+      }
+
+      if (changeCpuName.Checked) {
+        var count = Environment.ProcessorCount;
+        var data = new Dictionary<string, object>(count);
+        var randomName = Randoms.GenerateRandomString(10, 30);
+
+        for (var i = 0; count > i; ++i) {
+          data[i.ToString()] = randomName;
+        }
+
+        _hardwareCpuNameSpoofer.Value = data;
       }
 
       if (changeWindowsUpdateDeviceIdentifier.Checked) {
         _windowsUpdateDeviceIdentifierSpoofer.Value = new Dictionary<string, object> {
-          { "SusClientId", Guid.NewGuid() }, {
-            "SusClientIdValidation", Encoding.UTF8.GetBytes(
-              $"{Randoms.GenerateRandomAlphanumericText(80, 340)}=="
-            )
-          }
+          { Registries.SusClientIdentifier, Guid.NewGuid() },
+          { Registries.SusClientIdentifierValidation, $"{Randoms.GenerateRandomString(80, 340)}==" }
         };
       }
 
@@ -154,20 +162,12 @@ namespace Shudow {
         var begin = new DateTime(1999, 1, 1) - DateTime.MinValue;
         var end = lastYear - DateTime.MinValue;
 
+        var randomDate = Randoms.GenerateRandomInt((int)begin.TotalMinutes, (int)end.TotalMinutes);
+        var randomTime = Randoms.GenerateRandomLong((long)begin.TotalMilliseconds, (long)end.TotalMilliseconds);
+
         _windowsInstallationDateSpoofer.Value = new Dictionary<string, object> {
-          {
-            "InstallDate",
-            Randoms.GenerateRandomInt(
-              (int)begin.TotalSeconds,
-              (int)end.TotalSeconds
-            )
-          }, {
-            "InstallTime",
-            Randoms.GenerateRandomLong(
-              (long)begin.TotalMilliseconds,
-              (long)end.TotalMilliseconds
-            )
-          }
+          { Registries.WindowsInstallDate, randomDate },
+          { Registries.WindowsInstallTime, randomTime }
         };
       }
     }
@@ -185,6 +185,7 @@ namespace Shudow {
       changeSystemBiosReleaseDate.Checked = true;
       changeSystemBiosVersion.Checked = true;
       // changeSystemBiosVendor.Checked = true;
+      changeCpuName.Checked = true;
       changeWindowsUpdateDeviceIdentifier.Checked = true;
       changeWindowsInstallationDate.Checked = true;
 
@@ -204,6 +205,7 @@ namespace Shudow {
       Store(data, _systemProductNameSpoofer);
       Store(data, _systemBiosReleaseDateSpoofer);
       Store(data, _systemBiosVersionSpoofer);
+      Store(data, _hardwareCpuNameSpoofer);
       Store(data, _windowsUpdateDeviceIdentifierSpoofer);
       Store(data, _windowsInstallationDateSpoofer);
 
@@ -224,9 +226,9 @@ namespace Shudow {
       Restore(data, _systemProductNameSpoofer);
       Restore(data, _systemBiosReleaseDateSpoofer);
       Restore(data, _systemBiosVersionSpoofer);
+      Restore(data, _hardwareCpuNameSpoofer);
       Restore(data, _windowsUpdateDeviceIdentifierSpoofer);
       Restore(data, _windowsInstallationDateSpoofer);
     }
   }
-
 }

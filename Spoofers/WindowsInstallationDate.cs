@@ -13,8 +13,8 @@ namespace Shudow.Spoofers {
         var value = new Dictionary<string, object>(2);
 
         using (var key = Registries.GetSoftwareWindowsCurrentVersion()) {
-          value["InstallDate"] = key.GetValue("InstallDate");
-          value["InstallTime"] = key.GetValue("InstallTime");
+          value[Registries.WindowsInstallDate] = key.GetValue(Registries.WindowsInstallDate);
+          value[Registries.WindowsInstallTime] = key.GetValue(Registries.WindowsInstallTime);
         }
 
         return value;
@@ -24,19 +24,18 @@ namespace Shudow.Spoofers {
           return;
         }
 
-        if (keyValue.TryGetValue("InstallDate", out var installDate)) {
+        if (keyValue.TryGetValue(Registries.WindowsInstallDate, out var installDate)) {
           using (var key = Registries.GetSoftwareWindowsCurrentVersion(true)) {
-            key.SetValue("InstallDate", installDate, RegistryValueKind.DWord);
+            key.SetValue(Registries.WindowsInstallDate, installDate, RegistryValueKind.DWord);
           }
         }
 
-        if (keyValue.TryGetValue("InstallTime", out var installTime)) {
+        if (keyValue.TryGetValue(Registries.WindowsInstallTime, out var installTime)) {
           using (var key = Registries.GetSoftwareWindowsCurrentVersion(true)) {
-            key.SetValue("InstallTime", installTime, RegistryValueKind.QWord);
+            key.SetValue(Registries.WindowsInstallTime, installTime, RegistryValueKind.QWord);
           }
         }
       }
     }
   }
-
 }

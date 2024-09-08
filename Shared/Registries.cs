@@ -6,19 +6,38 @@ namespace Shudow.Shared {
 
   internal static class Registries {
 
-    public const string COMPUTER_NAME = "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ComputerName";
-    public const string ACTIVE_COMPUTER_NAME =
-      "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ActiveComputerName";
-    public const string LAST_COMPUTER_NAME = "SYSTEM\\CurrentControlSet\\Services\\EventLog\\State";
-    public const string TCP_IP_PARAMETERS = "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters";
-    public const string COMPUTER_HW_ID_CONFIG =
-      "SYSTEM\\CurrentControlSet\\Control\\IDConfigDB\\Hardware Profiles\\0001";
-    public const string SYSTEM_INFORMATION = "SYSTEM\\CurrentControlSet\\Control\\SystemInformation";
+    // System
+    private const string ComputerNameKey = "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ComputerName";
+    private const string ActiveComputerNameKey = "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ActiveComputerName";
+    private const string TcpIpParametersKey = "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters";
+    private const string HardwareConfigurationIdentifierKey = "SYSTEM\\CurrentControlSet\\Control\\IDConfigDB\\Hardware Profiles\\0001";
+    private const string SystemInformationKey = "SYSTEM\\CurrentControlSet\\Control\\SystemInformation";
 
-    public const string SOFTWARE_WINDOWS_UPDATE = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsUpdate";
-    public const string SOFTWARE_WINDOWS_CURRENT_VERSION = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
+    // Software
+    private const string WindowsUpdateKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsUpdate";
+    private const string WindowsCurrentVersionKey = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion";
 
-    public static RegistryKey GetLocalMachineKey(
+    // Hardware
+    private const string CentralProcessorKey = "HARDWARE\\DESCRIPTION\\System\\CentralProcessor";
+
+    public const string ComputerName = "ComputerName";
+    public const string ComputerHardwareIdentifier = "ComputerHardwareId";
+    public const string ComputerHardwareIdentifiers = "ComputerHardwareIds";
+    public const string ComputerHostname = "Hostname";
+    public const string ComputerNvHostname = "NV Hostname";
+    public const string HardwareProfileIdentifier = "HwProfileGuid";
+    public const string BiosReleaseDate = "BIOSReleaseDate";
+    public const string BiosVersion = "BIOSVersion";
+    public const string SystemManufacturer = "SystemManufacturer";
+    public const string SystemProductName = "SystemProductName";
+    public const string WindowsInstallDate = "InstallDate";
+    public const string WindowsInstallTime = "InstallTime";
+    public const string SusClientIdentifier = "SusClientId";
+    public const string SusClientIdentifierValidation = "SusClientIdValidation";
+
+    public const string CpuName = "ProcessorNameString";
+
+    private static RegistryKey GetLocalMachineKey(
       string name,
       bool writable = false
     ) {
@@ -32,32 +51,35 @@ namespace Shudow.Shared {
     }
 
     public static RegistryKey GetComputerName(bool writable = false) {
-      return GetLocalMachineKey(COMPUTER_NAME, writable);
+      return GetLocalMachineKey(ComputerNameKey, writable);
     }
 
     public static RegistryKey GetComputerActiveName(bool writable = false) {
-      return GetLocalMachineKey(ACTIVE_COMPUTER_NAME, writable);
+      return GetLocalMachineKey(ActiveComputerNameKey, writable);
     }
 
     public static RegistryKey GetComputerHostname(bool writable = false) {
-      return GetLocalMachineKey(TCP_IP_PARAMETERS, writable);
+      return GetLocalMachineKey(TcpIpParametersKey, writable);
     }
 
     public static RegistryKey GetComputerHardwareConfigurationIdentifier(bool writable = false) {
-      return GetLocalMachineKey(COMPUTER_HW_ID_CONFIG, writable);
+      return GetLocalMachineKey(HardwareConfigurationIdentifierKey, writable);
     }
 
     public static RegistryKey GetSystemInformation(bool writable = false) {
-      return GetLocalMachineKey(SYSTEM_INFORMATION, writable);
+      return GetLocalMachineKey(SystemInformationKey, writable);
     }
 
     public static RegistryKey GetSoftwareWindowsUpdate(bool writable = false) {
-      return GetLocalMachineKey(SOFTWARE_WINDOWS_UPDATE, writable);
+      return GetLocalMachineKey(WindowsUpdateKey, writable);
     }
 
     public static RegistryKey GetSoftwareWindowsCurrentVersion(bool writable = false) {
-      return GetLocalMachineKey(SOFTWARE_WINDOWS_CURRENT_VERSION, writable);
+      return GetLocalMachineKey(WindowsCurrentVersionKey, writable);
+    }
+
+    public static RegistryKey GetCentralProcessor(bool writable = false) {
+      return GetLocalMachineKey(CentralProcessorKey, writable);
     }
   }
-
 }

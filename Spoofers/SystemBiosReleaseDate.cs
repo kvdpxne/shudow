@@ -10,15 +10,14 @@ namespace Shudow.Spoofers {
     public object Value {
       get {
         using (var key = Registries.GetSystemInformation()) {
-          return key.GetValue("BIOSReleaseDate");
+          return key.GetValue(Registries.BiosReleaseDate);
         }
       }
       set {
         using (var key = Registries.GetSystemInformation(true)) {
-          key.SetValue("BIOSReleaseDate", value, RegistryValueKind.String);
+          key.SetValue(Registries.BiosReleaseDate, value, RegistryValueKind.String);
         }
       }
     }
   }
-
 }

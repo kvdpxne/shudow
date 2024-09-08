@@ -13,11 +13,11 @@ namespace Shudow.Spoofers {
         var value = new Dictionary<string, object>(2);
 
         using (var key = Registries.GetComputerHostname()) {
-          value["Hostname"] = key.GetValue("Hostname");
+          value[Registries.ComputerHostname] = key.GetValue(Registries.ComputerHostname);
         }
 
         using (var key = Registries.GetComputerHostname()) {
-          value["NV Hostname"] = key.GetValue("NV Hostname");
+          value[Registries.ComputerNvHostname] = key.GetValue(Registries.ComputerNvHostname);
         }
 
         return value;
@@ -27,19 +27,18 @@ namespace Shudow.Spoofers {
           return;
         }
 
-        if (keyValue.TryGetValue("Hostname", out var hostname)) {
+        if (keyValue.TryGetValue(Registries.ComputerHostname, out var hostname)) {
           using (var key = Registries.GetComputerHostname(true)) {
-            key.SetValue("Hostname", hostname, RegistryValueKind.String);
+            key.SetValue(Registries.ComputerHostname, hostname, RegistryValueKind.String);
           }
         }
 
-        if (keyValue.TryGetValue("NV Hostname", out var nvHostname)) {
+        if (keyValue.TryGetValue(Registries.ComputerNvHostname, out var nvHostname)) {
           using (var key = Registries.GetComputerHostname(true)) {
-            key.SetValue("NV Hostname", nvHostname, RegistryValueKind.String);
+            key.SetValue(Registries.ComputerNvHostname, nvHostname, RegistryValueKind.String);
           }
         }
       }
     }
   }
-
 }

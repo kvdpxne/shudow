@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Microsoft.Win32;
 using Shudow.Shared;
 
@@ -13,8 +15,10 @@ namespace Shudow.Spoofers {
         var value = new Dictionary<string, object>(2);
 
         using (var key = Registries.GetSoftwareWindowsUpdate()) {
-          value["SusClientId"] = key.GetValue("SusClientId");
-          value["SusClientIdValidation"] = key.GetValue("SusClientIdValidation");
+          value[Registries.SusClientIdentifier] = key.GetValue(Registries.SusClientIdentifier);
+
+          var bytes = key.GetValue(Registries.SusClientIdentifierValidation) as byte[];
+          value[Registries.SusClientIdentifierValidation] = Encoding.UTF8.GetString(bytes);
         }
 
         return value;
@@ -24,19 +28,22 @@ namespace Shudow.Spoofers {
           return;
         }
 
-        if (keyValue.TryGetValue("SusClientId", out var susClientIdentifier)) {
+        if (keyValue.TryGetValue(Registries.SusClientIdentifier, out var susClientIdentifier)) {
           using (var key = Registries.GetSoftwareWindowsUpdate(true)) {
-            key.SetValue("SusClientId", susClientIdentifier, RegistryValueKind.String);
+            key.SetValue(Registries.SusClientIdentifier, susClientIdentifier, RegistryValueKind.String);
           }
         }
 
-        if (keyValue.TryGetValue("SusClientIdValidation", out var susClientIdentifierValidation)) {
+        if (keyValue.TryGetValue(Registries.SusClientIdentifierValidation, out var susClientIdentifierValidation)) {
           using (var key = Registries.GetSoftwareWindowsUpdate(true)) {
-            key.SetValue("SusClientIdValidation", susClientIdentifierValidation, RegistryValueKind.Binary);
+            key.SetValue(
+              Registries.SusClientIdentifierValidation,
+              Encoding.UTF8.GetBytes($"{susClientIdentifierValidation}"),
+              RegistryValueKind.Binary
+            );
           }
         }
       }
     }
   }
-
 }
