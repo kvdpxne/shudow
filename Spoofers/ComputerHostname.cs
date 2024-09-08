@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Win32;
 using Shudow.Shared;
 
 namespace Shudow.Spoofers {
@@ -28,13 +29,13 @@ namespace Shudow.Spoofers {
 
         if (keyValue.TryGetValue("Hostname", out var hostname)) {
           using (var key = Registries.GetComputerHostname(true)) {
-            key.SetValue("Hostname", hostname);
+            key.SetValue("Hostname", hostname, RegistryValueKind.String);
           }
         }
 
         if (keyValue.TryGetValue("NV Hostname", out var nvHostname)) {
           using (var key = Registries.GetComputerHostname(true)) {
-            key.SetValue("NV Hostname", nvHostname);
+            key.SetValue("NV Hostname", nvHostname, RegistryValueKind.String);
           }
         }
       }

@@ -1,4 +1,5 @@
-﻿using Shudow.Shared;
+﻿using Microsoft.Win32;
+using Shudow.Shared;
 
 namespace Shudow.Spoofers {
 
@@ -16,7 +17,7 @@ namespace Shudow.Spoofers {
       }
       set {
         using (var key = Registries.GetComputerName(true)) {
-          key.SetValue("ComputerName", value);
+          key.SetValue("ComputerName", value, RegistryValueKind.String);
         }
       }
     }

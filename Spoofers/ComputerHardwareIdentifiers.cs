@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Win32;
 using Shudow.Shared;
 
 namespace Shudow.Spoofers {
@@ -28,13 +29,13 @@ namespace Shudow.Spoofers {
 
         if (keyValue.TryGetValue("ComputerHardwareId", out var computerHardwareId)) {
           using (var key = Registries.GetSystemInformation(true)) {
-            key.SetValue("ComputerHardwareId", computerHardwareId);
+            key.SetValue("ComputerHardwareId", computerHardwareId, RegistryValueKind.String);
           }
         }
 
         if (keyValue.TryGetValue("ComputerHardwareIds", out var computerHardwareIds)) {
           using (var key = Registries.GetSystemInformation(true)) {
-            key.SetValue("ComputerHardwareIds", computerHardwareIds);
+            key.SetValue("ComputerHardwareIds", computerHardwareIds, RegistryValueKind.MultiString);
           }
         }
       }

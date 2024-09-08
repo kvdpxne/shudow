@@ -74,7 +74,10 @@ namespace Shudow {
       // }
 
       if (changeComputerHostname.Checked) {
-        _computerHostnameSpoofer.Value = randomComputerName;
+        _computerHostnameSpoofer.Value = new Dictionary<string, object> {
+          { "Hostname", randomComputerName },
+          { "NV Hostname", randomComputerName }
+        };
       }
 
       if (changeComputerHardwareConfigurationIdentifier.Checked) {
@@ -82,9 +85,17 @@ namespace Shudow {
       }
 
       if (changeComputerHardwareIdentifiers.Checked) {
+
+        var count = Randoms.GenerateRandomNumber(3, 11);
+        var identifiers = new string[count];
+
+        for (var i = 0; count > i; ++i) {
+          identifiers[i] = $"{{{Guid.NewGuid()}}}";
+        }
+
         _computerHardwareIdentifiersSpoofer.Value = new Dictionary<string, object> {
           { "ComputerHardwareId", $"{{{Guid.NewGuid()}}}" },
-          { "ComputerHardwareIds", string.Join("", Enumerable.Range(0, 10).Select(_ => $"{{{Guid.NewGuid()}}}\n")) }
+          { "ComputerHardwareIds", identifiers }
         };
       }
 
@@ -130,7 +141,7 @@ namespace Shudow {
         _windowsUpdateDeviceIdentifierSpoofer.Value = new Dictionary<string, object> {
           { "SusClientId", Guid.NewGuid() }, {
             "SusClientIdValidation", Encoding.UTF8.GetBytes(
-              $"{Randoms.GenerateRandomAlphanumericText(200, 300)}=="
+              $"{Randoms.GenerateRandomAlphanumericText(80, 340)}=="
             )
           }
         };
@@ -146,15 +157,15 @@ namespace Shudow {
         _windowsInstallationDateSpoofer.Value = new Dictionary<string, object> {
           {
             "InstallDate",
-            (int)Randoms.GenerateRandomUnsignedInt(
-              (uint)begin.TotalSeconds,
-              (uint)end.TotalSeconds
+            Randoms.GenerateRandomInt(
+              (int)begin.TotalSeconds,
+              (int)end.TotalSeconds
             )
           }, {
             "InstallTime",
-            (long)Randoms.GenerateRandomUnsignedLong(
-              (ulong)begin.TotalMilliseconds,
-              (ulong)end.TotalMilliseconds
+            Randoms.GenerateRandomLong(
+              (long)begin.TotalMilliseconds,
+              (long)end.TotalMilliseconds
             )
           }
         };

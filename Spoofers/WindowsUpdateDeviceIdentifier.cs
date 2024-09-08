@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Win32;
 using Shudow.Shared;
 
 namespace Shudow.Spoofers {
@@ -25,13 +26,13 @@ namespace Shudow.Spoofers {
 
         if (keyValue.TryGetValue("SusClientId", out var susClientIdentifier)) {
           using (var key = Registries.GetSoftwareWindowsUpdate(true)) {
-            key.SetValue("SusClientId", susClientIdentifier);
+            key.SetValue("SusClientId", susClientIdentifier, RegistryValueKind.String);
           }
         }
 
         if (keyValue.TryGetValue("SusClientIdValidation", out var susClientIdentifierValidation)) {
           using (var key = Registries.GetSoftwareWindowsUpdate(true)) {
-            key.SetValue("SusClientIdValidation", susClientIdentifierValidation);
+            key.SetValue("SusClientIdValidation", susClientIdentifierValidation, RegistryValueKind.Binary);
           }
         }
       }

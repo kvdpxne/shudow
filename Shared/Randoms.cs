@@ -52,19 +52,19 @@ namespace Shudow.Shared {
     /// <param name="max">The inclusive upper bound of the random number returned.</param>
     /// <returns>A random unsigned 32-bit integer between <paramref name="min"/> and <paramref name="max"/> (inclusive).</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
-    public static uint GenerateRandomUnsignedInt(
-      uint min,
-      uint max
+    public static int GenerateRandomInt(
+      int min,
+      int max
     ) {
       if (min > max) {
         throw new ArgumentException("Min value should be less than or equal to max value.");
       }
 
-      var buffer = GenerateRandomBytes(sizeof(uint));
-      var randomValue = BitConverter.ToUInt32(buffer, 0);
+      var buffer = GenerateRandomBytes(sizeof(int));
+      var randomValue = BitConverter.ToInt32(buffer, 0);
 
       // Map the random value to the specified range
-      return min + randomValue % (max - min + 1);
+      return max - min + 1 + randomValue;
     }
 
     /// <summary>
@@ -74,16 +74,16 @@ namespace Shudow.Shared {
     /// <param name="max">The inclusive upper bound of the random number returned.</param>
     /// <returns>A random unsigned 64-bit integer between <paramref name="min"/> and <paramref name="max"/> (inclusive).</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
-    public static ulong GenerateRandomUnsignedLong(
-      ulong min,
-      ulong max
+    public static long GenerateRandomLong(
+      long min,
+      long max
     ) {
       if (min > max) {
         throw new ArgumentException("Min value should be less than or equal to max value.");
       }
 
-      var buffer = GenerateRandomBytes(sizeof(uint));
-      var randomValue = BitConverter.ToUInt32(buffer, 0);
+      var buffer = GenerateRandomBytes(sizeof(long));
+      var randomValue = BitConverter.ToInt64(buffer, 0);
 
       // Map the random value to the specified range
       return min + randomValue % (max - min + 1);
