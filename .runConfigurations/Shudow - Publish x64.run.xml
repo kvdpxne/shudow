@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Shudow - Publish x64" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" delete_existing_files="true" platform="Any CPU" runtime="win-x64" target_folder="$PROJECT_DIR$/.build/release/x64" target_framework="net8.0-windows" uuid_high="-997692727517887101" uuid_low="-7436839974599616758" />
+    <method v="2" />
+  </configuration>
+</component>

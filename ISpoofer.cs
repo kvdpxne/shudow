@@ -1,9 +1,8 @@
-﻿namespace Shudow {
+﻿namespace Shudow;
 
-  internal interface ISpoofer {
+internal interface ISpoofer {
+  
+  string Name { get; }
 
-    string Name { get; }
-
-    object Value { get; set; }
-  }
+  object Value { get; set; }
 }

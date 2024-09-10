@@ -1,52 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using Shudow.Shared;
+﻿using Shudow.Shared;
 
-namespace Shudow.Spoofers {
+namespace Shudow.Spoofers;
 
-  internal class HardwareCpuName : ISpoofer {
+internal class HardwareCpuName : ISpoofer {
+    
+  public string Name => "HardwareCPUName";
 
-    public string Name => "HardwareCPUName";
+  public object Value {
+    get {
+      var count = Environment.ProcessorCount;
+      var value = new Dictionary<string, object>(count);
 
-    public object Value {
-      get {
-        var count = Environment.ProcessorCount;
-        var value = new Dictionary<string, object>(count);
+      for (var i = 0; count > i; ++i) {
+        var keyName = i.ToString();
 
-        for (var i = 0; count > i; ++i) {
-          var keyName = i.ToString();
-
-          using (var key = Registries.GetCentralProcessor().OpenSubKey(keyName)) {
-            if (null == key) {
-              continue;
-            }
-
-            value[keyName] = key.GetValue(Registries.CpuName);
-          }
+        using var key = Registries.GetCentralProcessor().OpenSubKey(keyName);
+        if (null == key) {
+          continue;
         }
 
-        return value;
+        value[keyName] = key.GetValue(Registries.CpuName);
       }
-      set {
-        if (!(value is Dictionary<string, object> keyValue)) {
-          return;
+
+      return value;
+    }
+    set {
+      if (value is not Dictionary<string, object> keyValue) {
+        return;
+      }
+
+      for (var i = 0; Environment.ProcessorCount > i; ++i) {
+        var keyName = i.ToString();
+
+        if (!keyValue.TryGetValue(keyName, out var cpuName)) {
+          continue;
         }
 
-        for (var i = 0; Environment.ProcessorCount > i; ++i) {
-          var keyName = i.ToString();
-
-          if (!keyValue.TryGetValue(keyName, out var cpuName)) {
-            continue;
-          }
-
-          using (var key = Registries.GetCentralProcessor().OpenSubKey(keyName, true)) {
-            if (null == key) {
-              continue;
-            }
-
-            key.SetValue(Registries.CpuName, cpuName);
-          }
-        }
+        using var key = Registries.GetCentralProcessor().OpenSubKey(keyName, true);
+        key?.SetValue(Registries.CpuName, cpuName);
       }
     }
   }
