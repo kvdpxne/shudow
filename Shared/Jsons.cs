@@ -24,7 +24,7 @@ internal static class Jsons {
   /// Thrown when the <see cref="JsonElement"/> is of an unsupported <see cref="JsonValueKind"/>
   /// or when <see cref="JsonValueKind"/> is <see cref="JsonValueKind.Undefined"/> or <see cref="JsonValueKind.Null"/>.
   /// </exception>
-  public static object Parse(
+  public static object? Parse(
     object o
   ) {
     if (o is not JsonElement json) {
@@ -46,9 +46,16 @@ internal static class Jsons {
         var dictionary = json.Deserialize<Dictionary<string, object>>();
 
         foreach (var (key, value) in dictionary.ToList()) {
-          if (value is JsonElement) {
-            dictionary[key] = Parse(value);
+          if (value is not JsonElement) {
+            continue;
           }
+
+          var parsedValue = Parse(value);
+          if (null == parsedValue) {
+            continue;
+          }
+
+          dictionary[key] = parsedValue;
         }
 
         return dictionary;

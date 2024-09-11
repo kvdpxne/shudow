@@ -15,6 +15,8 @@ internal static class Registries {
   // Software
   private const string WindowsUpdateKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate";
   private const string WindowsCurrentVersionKey = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+  public const string SoftwareCryptography = @"SOFTWARE\Microsoft\Cryptography";
+  public const string SoftwareSqmClient = @"SOFTWARE\Microsoft\SQMClient";
 
   // Hardware
   private const string CentralProcessorKey = @"HARDWARE\DESCRIPTION\System\CentralProcessor";
@@ -36,7 +38,7 @@ internal static class Registries {
 
   public const string CpuName = "ProcessorNameString";
 
-  private static RegistryKey? GetLocalMachineKey(
+  public static RegistryKey? GetLocalMachineKey(
     string name,
     bool writable = false
   ) {

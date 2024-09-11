@@ -20,6 +20,9 @@ internal partial class Form1 : Form {
   private readonly ISpoofer _windowsUpdateDeviceIdentifierSpoofer;
   private readonly ISpoofer _windowsInstallationDateSpoofer;
 
+  private readonly ISpoofer _softwareCryptography;
+  private readonly ISpoofer _softwareSqmClient;
+
   public Form1() {
     InitializeComponent();
 
@@ -35,6 +38,9 @@ internal partial class Form1 : Form {
     _hardwareCpuNameSpoofer = new HardwareCpuName();
     _windowsUpdateDeviceIdentifierSpoofer = new WindowsUpdateDeviceIdentifier();
     _windowsInstallationDateSpoofer = new WindowsInstallationDate();
+
+    _softwareCryptography = new SoftwareCryptography();
+    _softwareSqmClient = new SoftwareSqmClient();
   }
 
   private static void Store(
@@ -166,6 +172,11 @@ internal partial class Form1 : Form {
         { Registries.WindowsInstallTime, randomTime }
       };
     }
+
+    if (changeMachineIdentifier.Checked) {
+      _softwareCryptography.Value = Guid.NewGuid();
+      _softwareSqmClient.Value = $"{{{Guid.NewGuid()}}}".ToUpper();
+    }
   }
 
   private void button4_Click(object sender, EventArgs e) {
@@ -185,8 +196,10 @@ internal partial class Form1 : Form {
     changeWindowsUpdateDeviceIdentifier.Checked = true;
     changeWindowsInstallationDate.Checked = true;
 
+    changeMachineIdentifier.Checked = true;
+
     //
-    //HandleChangeButtonClick(sender, e);
+    HandleChangeButtonClick(sender, e);
   }
 
   private void HandleBackupButtonClick(object sender, EventArgs e) {
@@ -204,6 +217,9 @@ internal partial class Form1 : Form {
     Store(data, _hardwareCpuNameSpoofer);
     Store(data, _windowsUpdateDeviceIdentifierSpoofer);
     Store(data, _windowsInstallationDateSpoofer);
+
+    Store(data, _softwareCryptography);
+    Store(data, _softwareSqmClient);
 
     var json = JsonSerializer.Serialize(data);
     File.WriteAllText("save.json", json);
@@ -225,5 +241,8 @@ internal partial class Form1 : Form {
     Restore(data, _hardwareCpuNameSpoofer);
     Restore(data, _windowsUpdateDeviceIdentifierSpoofer);
     Restore(data, _windowsInstallationDateSpoofer);
+
+    Restore(data, _softwareCryptography);
+    Restore(data, _softwareSqmClient);
   }
 }
